@@ -1,6 +1,6 @@
 # Bay Greenery — website
 
-The source for [baygreenery.com](https://www.baygreenery.com). Built with [Astro](https://astro.build), which turns simple text files into a fast, static website. Hosted on Cloudflare Pages.
+The source for [baygreenery.com](https://www.baygreenery.com). Built with [Astro](https://astro.build), which turns simple text files into a fast, static website. Hosted on Cloudflare (Workers with static assets, project `baygreenery`), which builds the site straight from this repository.
 
 > This file is for collaborators. It is not published on the website.
 
@@ -52,7 +52,10 @@ npm test           # build the site and run all checks
 ## Making a change
 
 1. Create a branch, make your edit, push it.
-2. Open a pull request. Cloudflare posts a preview link, and the checks run.
-3. Nathan reviews and merges. The live site updates within a couple of minutes.
+2. Cloudflare builds a **preview link** for that branch (an address ending in `baygreenery-website.workers.dev`), and the GitHub checks run.
+3. Open a pull request. Nathan reviews the preview and merges.
+4. Merging into `main` publishes the change to the live site within a couple of minutes.
+
+Cloudflare settings live in `wrangler.jsonc`.
 
 Questions: **ops@baygreenery.com**
