@@ -1,0 +1,20 @@
+---
+import type { Project } from '../lib/content';
+interface Props { projects: Project[]; activeId?: string }
+const { projects, activeId } = Astro.props;
+const singles = projects.filter((p) => p.data.kind === 'project');
+const collections = projects.filter((p) => p.data.kind === 'collection');
+const cls = (id?: string) => `portfolio-nav-link${id === activeId ? ' is-active' : ''}`;
+---
+<aside class="portfolio-sidebar">
+  <button type="button" class="portfolio-sidebar-toggle" data-sidebar-toggle aria-label="Toggle project list">
+    Projects &#9662;
+  </button>
+  <nav class="portfolio-sidebar-list" aria-label="Projects">
+    <a class={cls(undefined)} href="/projects/" aria-current={activeId ? undefined : 'page'}>All Projects &amp; Photos</a>
+    <span class="portfolio-nav-header">Projects (Before &amp; After)</span>
+    {singles.map((p) => <a class={cls(p.id)} href={`/projects/${p.id}/`} aria-current={p.id === activeId ? 'page' : undefined}>{p.data.title}</a>)}
+    <span class="portfolio-nav-header">Project Collections</span>
+    {collections.map((p) => <a class={cls(p.id)} href={`/projects/${p.id}/`} aria-current={p.id === activeId ? 'page' : undefined}>{p.data.title}</a>)}
+  </nav>
+</aside>

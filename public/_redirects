@@ -1,0 +1,5 @@
+# Cloudflare Pages redirects. Old URLs from the GitHub Pages site.
+/portfolio            /projects/   301
+/portfolio/           /projects/   301
+/portfolio/index.html /projects/   301
+/index.html           /            301

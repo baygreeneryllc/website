@@ -1,0 +1,155 @@
+---
+import { Image, getImage } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../data/site';
+import { heroPhoto, aboutPhoto, homeTeaser } from '../data/gallery';
+import { getServices, getPublishedAreas } from '../lib/content';
+import { businessSchema } from '../lib/schema';
+
+const services = await getServices();
+const areas = await getPublishedAreas();
+const hero = await getImage({ src: heroPhoto, width: 1920, format: 'webp', quality: 72 });
+const heroMobile = await getImage({ src: heroPhoto, width: 900, format: 'webp', quality: 70 });
+
+const reviews = [
+  { name: 'Sean P.', text: 'Nathan was/is tremendous. We moved into a rental which needed quite a bit of yard/garden work which was overgrown with weeds. Every step of the way Nathan walked us through our options and made suggestions that were pocketbook friendly. The work he did would have taken me many days to accomplish and I know would not look nearly as nice. For the work he does the rates are very competitive. I highly recommend Bay Greenery for your landscaping needs.' },
+  { name: 'Gavin R.', text: 'Bay Greenery did a beautiful job transforming my front yard. They were easy to work with, communicative, knowledgeable, and dependable throughout the entire process. Neighbors often stop to admire the yard. We are so pleased! Highly recommend for all landscaping projects — big or small!' },
+  { name: 'Elizabeth W.', text: 'We started using Bay Greenery for our yard maintenance last year, and it has been a great experience. Nathan is knowledgeable, a great communicator, and completely transparent about pricing. He figures out what needs to be done and makes our yard look fabulous. Highly recommend!' },
+  { name: 'Adam B.', text: "Bay Greenery is top notch. No project is too big or small and it's always professionally done. I highly recommend them." },
+  { name: 'Lorraine F.', text: 'I am very happy with his work. Nathan is fast while he works but very thorough. He gives me great ideas and suggestions.' },
+  { name: 'Mir Hamza M.', text: '★★★★★ — 5-star Google review.' },
+];
+---
+<BaseLayout
+  isHome
+  title="Bay Greenery — Landscape Construction, Maintenance & Repair | San Jose"
+  description="Licensed San Jose landscape contractor serving the South Bay and Peninsula: landscape design and build, construction, irrigation repair, and maintenance."
+  image={heroPhoto}
+  imageAlt="Front yard remodel with flagstone path, fountain, and drought-tolerant plantings in Almaden Valley"
+  schema={[businessSchema(services, areas)]}
+>
+  <Fragment slot="head">
+    <link rel="preload" as="image" href={heroMobile.src} media="(max-width: 900px)">
+    <link rel="preload" as="image" href={hero.src} media="(min-width: 901px)">
+    <style set:html={`.hero{--hero-image:url('${heroMobile.src}')}@media (min-width:901px){.hero{--hero-image:url('${hero.src}')}}`} />
+  </Fragment>
+
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-top">
+        <img class="hero-logo" src="/images/logo-baygreenery.png" alt="Bay Greenery" width="1624" height="484">
+        <h1 class="hero-tagline">Landscape Construction, Maintenance &amp; Repair in the South Bay and Peninsula</h1>
+        <p class="hero-license">{site.license}</p>
+      </div>
+      <a class="hero-cta js-booking-link" href={site.bookingFormUrl}>
+        Book a Service
+        <span class="hero-cta-arrow" aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="section services-section" id="services">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">For All Your Landscape Needs</h2>
+        <p class="section-subtitle">Construction, Service, &amp; Maintenance of Your Outdoor Space</p>
+      </div>
+
+      <div class="carousel" id="servicesCarousel">
+        <div class="carousel-viewport">
+          <div class="carousel-track">
+            {services.map((s) => (
+              <a class="service-card" href={`/services/${s.id}/`}>
+                <div class="service-card-image">
+                  <Image src={s.data.tile} alt={s.data.tileAlt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 400px" format="webp" quality={75} loading="lazy" />
+                </div>
+                <div class="service-card-body">
+                  <h3 class="service-card-title">{s.data.title}</h3>
+                  <p class="service-card-desc">{s.data.cardText}</p>
+                  <ul class="service-card-list">
+                    {s.data.cardBullets.map((b) => <li>{b}</li>)}
+                  </ul>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="carousel-controls">
+          <button class="carousel-btn" data-carousel-prev aria-label="Previous services">&larr;</button>
+          <button class="carousel-btn" data-carousel-next aria-label="Next services">&rarr;</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section reviews-section" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <p class="section-subtitle">Real feedback from clients in the South Bay and Peninsula.</p>
+      </div>
+
+      <div class="reviews-frame" id="reviewsCarousel">
+        <div class="reviews-viewport">
+          <div class="reviews-track">
+            {reviews.map((r) => (
+              <article class="review-card">
+                <div class="review-stars" aria-label="5 out of 5 stars">★★★★★</div>
+                <p class="review-text">{r.text}</p>
+                <div class="review-meta"><span class="review-name">{r.name}</span></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div class="reviews-cta-wrap">
+        <a class="reviews-cta js-reviews-link" href={site.googleReviewsUrl}>Read All Google Reviews <span aria-hidden="true">&rarr;</span></a>
+        <a class="leave-review-cta js-leave-review-link" href={site.leaveReviewUrl}>
+          Leave a Review
+          <img class="leave-review-google-logo" src="/images/google-logo.png" alt="Google" width="400" height="400" loading="lazy">
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">Project Gallery</h2>
+        <p class="section-subtitle">Our recent endeavours.</p>
+      </div>
+
+      <div class="gallery-grid">
+        {homeTeaser.map((t) => (
+          <a class="gallery-tile" href={t.href}>
+            <Image src={t.src} alt={t.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 400px" format="webp" quality={75} loading="lazy" />
+            <span class="gallery-tile-label is-project-type">{t.label}</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="gallery-cta-wrap">
+        <a class="gallery-cta" href="/projects/">See Full Gallery <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">About the Owner</h2>
+      </div>
+
+      <div class="about-grid">
+        <Image class="about-portrait" src={aboutPhoto} alt="Nathan, owner of Bay Greenery" widths={[400, 800]} sizes="(max-width: 700px) 100vw, 400px" format="webp" quality={78} loading="lazy" />
+        <div class="about-content">
+          <p>My love of plants and the desire to cultivate beautiful and inspirational spaces is why I am here. I believe every space has the potential to become a place that enriches daily life. Helping clients create those spaces is what makes this work meaningful to me.</p>
+          <p>I take pride in my work and bring that sentiment into every project and task. The opportunity to make a positive impact for my clients motivates me to continually expand my knowledge, refine my skills, and pursue higher standards in everything I do. I believe there is always more to learn, and that commitment to growth helps me better serve the people who place their trust in me.</p>
+          <p>Outside of work, I enjoy exploring new places, spending time with my fiancée and friends, and pursuing my favorite hobbies. Bucket list items include seeing every national park, being on <em>Survivor</em>, DM'ing a years-long D&amp;D campaign, and landscaping a home of my own.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

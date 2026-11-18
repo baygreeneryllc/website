@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaPanel from '../../components/CtaPanel.astro';
+import { getServices } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const services = await getServices();
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Services', href: '/services/' }];
+---
+<BaseLayout
+  title="Landscape Services in San Jose & the Peninsula | Bay Greenery"
+  description="Landscape design and build, construction, irrigation repair, landscape repair, maintenance, cleanup, and consultations from licensed contractor Bay Greenery."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <main class="page-main">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="page-title">Landscape Services</h1>
+      <p class="page-lead">Construction, service, and maintenance of your outdoor space, from a single repair call to a full landscape remodel. Licensed, bonded, and insured.</p>
+      <div class="card-grid">
+        {services.map((s) => (
+          <a class="link-card" href={`/services/${s.id}/`}>
+            <div class="link-card-image"><Image src={s.data.tile} alt={s.data.tileAlt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 360px" format="webp" quality={75} loading="lazy" /></div>
+            <div class="link-card-body"><h2 class="visually-hidden">{s.data.title}</h2><h3 aria-hidden="true">{s.data.title}</h3><p>{s.data.cardText.split('. ')[0]}.</p></div>
+          </a>
+        ))}
+      </div>
+      <CtaPanel />
+    </div>
+  </main>
+</BaseLayout>

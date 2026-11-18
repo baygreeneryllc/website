@@ -1,0 +1,17 @@
+{
+  "name": "baygreenery-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check:seo": "node scripts/seo-check.mjs",
+    "test": "npm run build && npm run check:seo"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.5",
+    "astro": "7.4.12",
+    "sharp": "0.35.5"
+  }
+}

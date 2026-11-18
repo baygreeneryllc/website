@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaPanel from '../../components/CtaPanel.astro';
+import { getPublishedAreas, getProjects, getAllAreas, projectsInArea } from '../../lib/content';
+import { breadcrumbSchema } from '../../lib/schema';
+
+const areas = await getPublishedAreas();
+const all = await getAllAreas();
+const projects = await getProjects();
+const crumbs = [{ name: 'Home', href: '/' }, { name: 'Service Areas', href: '/areas/' }];
+---
+<BaseLayout
+  title="Service Areas: South Bay & Peninsula Landscaping | Bay Greenery"
+  description="Bay Greenery serves the South Bay and Peninsula, including San Jose, Almaden Valley, Ladera, Portola Valley, and Campbell. See projects in each area."
+  schema={[breadcrumbSchema(crumbs)]}
+>
+  <main class="page-main">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="page-title">Service Areas</h1>
+      <p class="page-lead">Based in Cupertino, Bay Greenery works across the South Bay and Peninsula. These are areas where you can see our completed projects.</p>
+      <div class="card-grid">
+        {areas.map((a) => {
+          const count = projectsInArea(a, projects, all).length;
+          return (
+            <a class="link-card" href={`/areas/${a.id}/`}>
+              <div class="link-card-body">
+                <h2 class="visually-hidden">{a.data.name}</h2>
+                <h3 aria-hidden="true">{a.data.name}</h3>
+                <p>{a.data.locality} · {count} project{count === 1 ? '' : 's'}</p>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+      <p class="page-section">Don't see your city? We serve the wider South Bay and Peninsula. <a href="/services/">See our services</a> or get in touch.</p>
+      <CtaPanel />
+    </div>
+  </main>
+</BaseLayout>

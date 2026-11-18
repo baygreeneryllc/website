@@ -1,0 +1,17 @@
+---
+import { Image } from 'astro:assets';
+import { coverOf, type Project, type Area } from '../lib/content';
+interface Props { project: Project; areas: Area[] }
+const { project, areas } = Astro.props;
+const cover = coverOf(project);
+const areaNames = project.data.areas.map((r) => areas.find((a) => a.id === r.id)?.data.name).filter(Boolean).join(', ');
+---
+<a class="link-card" href={`/projects/${project.id}/`}>
+  <div class="link-card-image">
+    <Image src={cover.src} alt={cover.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 360px" format="webp" quality={75} loading="lazy" />
+  </div>
+  <div class="link-card-body">
+    <h3>{project.data.title}</h3>
+    <p>{areaNames}</p>
+  </div>
+</a>

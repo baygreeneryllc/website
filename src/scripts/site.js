@@ -1,6 +1,6 @@
 /* ====================================================================
    Bay Greenery — site scripts
-   - Wires up config.js values to links and footer fields across the site
+   - Wires up site settings (src/data/site.ts) to links across the site
    - Services carousel (advances by 3 on desktop, 2 on tablet, 1 on mobile)
    - Reviews auto-scroll with pause on hover / interaction
    - Project gallery lightbox
@@ -377,61 +377,36 @@
      One section visible at a time, hash-routed so direct links work.
      ----------------------------------------------------------------- */
   function initPortfolioRouter() {
+    // Each project now has its own page. Old gallery links like
+    // /portfolio/#retaining-wall land on /projects/ and are forwarded.
+    const legacy = {
+      'golf-creek': 'almaden-valley-landscape-remodel',
+      'retaining-wall': 'ladera-retaining-wall',
+      'artificial-turf': 'almaden-valley-artificial-turf',
+      'fine-grading': 'ladera-fine-grading',
+      'dg-driveway': 'almaden-valley-dg-driveway',
+      'overseeding': 'san-jose-lawn-overseeding',
+      'fence': 'campbell-fence-replacement',
+      'yard-cleanup': 'campbell-yard-cleanup',
+      'sod-replacement': 'sod-replacement',
+      'irrigation-repair': 'irrigation-repair-calls',
+      'irrigation': 'drip-sprinkler-installs',
+      'landscape-lighting': 'ladera-landscape-lighting'
+    };
+    const hash = (window.location.hash || '').replace('#', '');
+    if (window.location.pathname === '/projects/' && legacy[hash]) {
+      window.location.replace('/projects/' + legacy[hash] + '/');
+      return;
+    }
+
     const root = document.querySelector('.portfolio-layout');
     if (!root) return;
-    const sections = Array.from(root.querySelectorAll('.portfolio-section'));
-    const links = Array.from(root.querySelectorAll('.portfolio-nav-link'));
-    if (!sections.length || !links.length) return;
-
-    const defaultId = 'home';
-    const known = new Set(sections.map(function (s) { return s.id; }));
-
-    function show(id) {
-      if (!known.has(id)) id = defaultId;
-      sections.forEach(function (s) {
-        s.classList.toggle('is-active', s.id === id);
-      });
-      links.forEach(function (l) {
-        const target = (l.getAttribute('href') || '').replace('#', '');
-        l.classList.toggle('is-active', target === id);
-      });
-      // Mobile: close any open drawer
-      root.classList.remove('sidebar-open');
-    }
-
-    function hashId() {
-      const h = (window.location.hash || '').replace('#', '');
-      return known.has(h) ? h : defaultId;
-    }
-
-    links.forEach(function (l) {
-      l.addEventListener('click', function (e) {
-        const href = l.getAttribute('href') || '';
-        if (!href.startsWith('#')) return;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        const target = href.replace('#', '') || defaultId;
-        if (window.history && window.history.pushState) {
-          window.history.pushState(null, '', '#' + target);
-        } else {
-          window.location.hash = target;
-        }
-        show(target);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
-
-    window.addEventListener('popstate', function () { show(hashId()); });
-    window.addEventListener('hashchange', function () { show(hashId()); });
-
     const toggle = root.querySelector('[data-sidebar-toggle]');
     if (toggle) {
       toggle.addEventListener('click', function () {
         root.classList.toggle('sidebar-open');
       });
     }
-
-    show(hashId());
   }
 
   /* -----------------------------------------------------------------

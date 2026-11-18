@@ -1,0 +1,80 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaPanel from '../../components/CtaPanel.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getServices, getProjects, getAllAreas, getPublishedAreas, projectsForService, type Service } from '../../lib/content';
+import { breadcrumbSchema, businessId } from '../../lib/schema';
+import { absoluteUrl } from '../../data/site';
+
+export async function getStaticPaths() {
+  const services = await getServices();
+  return services.map((service) => ({ params: { id: service.id }, props: { service } }));
+}
+
+const { service } = Astro.props as { service: Service };
+const { Content } = await render(service);
+const projects = projectsForService(service, await getProjects());
+const areas = await getAllAreas();
+const publishedAreas = await getPublishedAreas();
+const others = (await getServices()).filter((s) => s.id !== service.id);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Services', href: '/services/' },
+  { name: service.data.title, href: `/services/${service.id}/` },
+];
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.data.title,
+    serviceType: service.data.title,
+    description: service.data.description,
+    url: absoluteUrl(`/services/${service.id}/`),
+    provider: { '@id': businessId },
+    areaServed: publishedAreas.map((a) => ({ '@type': 'Place', name: a.data.name })),
+  },
+  breadcrumbSchema(crumbs),
+];
+---
+<BaseLayout title={service.data.seoTitle} description={service.data.description} image={service.data.tile} imageAlt={service.data.tileAlt} schema={schema}>
+  <main class="page-main">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="page-title">{service.data.title}</h1>
+      <p class="page-lead">{service.data.cardText}</p>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {projects.length > 0 && (
+        <section class="page-section">
+          <h2>Recent {service.data.title.toLowerCase()} projects</h2>
+          <div class="card-grid">
+            {projects.map((p) => <ProjectCard project={p} areas={areas} />)}
+          </div>
+        </section>
+      )}
+
+      <section class="page-section">
+        <h2>Where we work</h2>
+        <p>We serve the South Bay and Peninsula, including:</p>
+        <ul class="tag-list">
+          {publishedAreas.map((a) => <li><a href={`/areas/${a.id}/`}>{a.data.name}</a></li>)}
+        </ul>
+      </section>
+
+      <CtaPanel heading={`Need ${service.data.title.toLowerCase()}?`} />
+
+      <section class="page-section">
+        <h2>Other services</h2>
+        <ul class="tag-list">
+          {others.map((s) => <li><a href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
+        </ul>
+      </section>
+    </div>
+  </main>
+</BaseLayout>

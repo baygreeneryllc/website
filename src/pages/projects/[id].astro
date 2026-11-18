@@ -1,0 +1,95 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectsSidebar from '../../components/ProjectsSidebar.astro';
+import GalleryTile from '../../components/GalleryTile.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaPanel from '../../components/CtaPanel.astro';
+import { getProjects, getAllAreas, getServices, getPublishedAreas, coverOf, type Project } from '../../lib/content';
+import { breadcrumbSchema, businessId } from '../../lib/schema';
+import { absoluteUrl } from '../../data/site';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props as { project: Project };
+const { Content } = await render(project);
+const projects = await getProjects();
+const areas = await getAllAreas();
+const published = new Set((await getPublishedAreas()).map((a) => a.id));
+const services = await getServices();
+
+const projectAreas = project.data.areas.map((r) => areas.find((a) => a.id === r.id)!).filter(Boolean);
+const projectServices = project.data.services.map((r) => services.find((s) => s.id === r.id)!).filter(Boolean);
+const areaNames = projectAreas.map((a) => a.data.name);
+const cover = coverOf(project);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Projects', href: '/projects/' },
+  { name: project.data.title, href: `/projects/${project.id}/` },
+];
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: project.data.title,
+    url: absoluteUrl(`/projects/${project.id}/`),
+    description: project.data.summary,
+    about: { '@id': businessId },
+    mainEntity: {
+      '@type': 'CreativeWork',
+      name: project.data.title,
+      description: project.data.summary,
+      creator: { '@id': businessId },
+      contentLocation: projectAreas.map((a) => ({ '@type': 'Place', name: a.data.locality.includes(a.data.name) ? a.data.locality : `${a.data.name}, ${a.data.locality}` })),
+      ...(project.data.completed ? { dateCreated: project.data.completed } : {}),
+    },
+  },
+  breadcrumbSchema(crumbs),
+];
+const titleTag = `${project.data.title} | Bay Greenery`;
+const photoGroupArea = (ref?: { id: string }) => (ref ? areas.find((a) => a.id === ref.id)?.data.name : undefined);
+---
+<BaseLayout title={titleTag} description={project.data.summary} image={cover.src} imageAlt={cover.alt} schema={schema}>
+  <div class="portfolio-layout">
+    <ProjectsSidebar projects={projects} activeId={project.id} />
+
+    <main class="portfolio-content">
+      <article class="portfolio-section is-active">
+        <Breadcrumbs items={crumbs} />
+        <div class="portfolio-section-head">
+          <h1>{project.data.title}</h1>
+          <p class="portfolio-section-meta">
+            {projectServices.map((s) => <span>{s.data.title}</span>)}
+            <span>{areaNames.join(', ')}</span>
+            <span>{project.data.photos.length} photos</span>
+          </p>
+        </div>
+
+        <div class="project-photo-grid">
+          {project.data.photos.map((ph, i) => {
+            const area = photoGroupArea(ph.area);
+            const label = project.data.kind === 'collection' && area ? (ph.label ? `${ph.label} · ${area}` : area) : ph.label;
+            return <GalleryTile src={ph.src} alt={ph.alt} label={label} eager={i < 2} />;
+          })}
+        </div>
+
+        <div class="prose page-section">
+          <Content />
+        </div>
+
+        <div class="page-section">
+          <h2>Service{projectServices.length > 1 ? 's' : ''} &amp; location</h2>
+          <ul class="tag-list">
+            {projectServices.map((s) => <li><a href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
+            {projectAreas.map((a) => <li>{published.has(a.id) ? <a href={`/areas/${a.id}/`}>{a.data.name}</a> : <span>{a.data.name}</span>}</li>)}
+          </ul>
+        </div>
+
+        <CtaPanel heading="Planning a similar project?" />
+      </article>
+    </main>
+  </div>
+</BaseLayout>
