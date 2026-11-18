@@ -1,0 +1,14 @@
+// Cloudflare Workers configuration for baygreenery.com.
+// The site is static (built by Astro into dist/). Server code for the
+// quote form and upload page will be added here later as "main".
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "baygreenery",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash"
+  },
+  "observability": { "enabled": true }
+}
