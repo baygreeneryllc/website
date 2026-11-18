@@ -380,7 +380,7 @@
     // Each project now has its own page. Old gallery links like
     // /portfolio/#retaining-wall land on /projects/ and are forwarded.
     const legacy = {
-      'golf-creek': 'almaden-valley-lawn-to-landscape',
+      'golf-creek': 'almaden-valley-landscape-remodel',
       'retaining-wall': 'ladera-retaining-wall',
       'artificial-turf': 'almaden-valley-artificial-turf',
       'fine-grading': 'ladera-fine-grading',

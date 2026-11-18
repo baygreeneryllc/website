@@ -13,8 +13,8 @@ export interface GalleryPhoto {
 }
 
 export const gallery: GalleryPhoto[] = [
-  { src: photo('gallery-01'), alt: 'Front entry with flagstone stepping stones, fountain, and new plantings in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-lawn-to-landscape' },
-  { src: photo('gallery-02'), alt: 'Former lawn converted to layered plantings with a Japanese maple in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-lawn-to-landscape' },
+  { src: photo('gallery-01'), alt: 'Front entry with flagstone stepping stones, fountain, and new plantings in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-landscape-remodel' },
+  { src: photo('gallery-02'), alt: 'Remodeled front yard with layered plantings and Japanese maple in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-landscape-remodel' },
   { src: photo('gallery-03'), alt: 'Artificial turf side yard in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-artificial-turf' },
   { src: photo('gallery-04'), alt: 'Artificial turf lawn with curved path in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-artificial-turf' },
   { src: photo('gallery-05'), alt: 'Decomposed granite driveway extension in Almaden Valley', area: 'almaden-valley', project: 'almaden-valley-dg-driveway' },
@@ -42,7 +42,7 @@ export const gallery: GalleryPhoto[] = [
 
 /* Homepage "Project Gallery" teaser: six tiles. */
 export const homeTeaser = [
-  { src: photo('gallery-02'), alt: 'Front lawn converted to a landscaped garden in Almaden Valley', label: 'Lawn Conversion', href: '/projects/almaden-valley-lawn-to-landscape/' },
+  { src: photo('gallery-02'), alt: 'Remodeled front yard in Almaden Valley', label: 'Design & Build', href: '/projects/almaden-valley-landscape-remodel/' },
   { src: photo('gallery-11'), alt: 'Step lighting on a hillside stairway in Portola Valley', label: 'Landscape Lighting', href: '/projects/portola-valley-landscape-lighting/' },
   { src: photo('gallery-20'), alt: 'Timber retaining wall and steps in Ladera', label: 'Retaining Wall', href: '/projects/ladera-retaining-wall/' },
   { src: photo('featured-04'), alt: 'Garden with lawn, boulders, and flagstone path in Ladera', label: 'Design & Build', href: '/projects/' },
