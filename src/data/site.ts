@@ -9,9 +9,11 @@ export const site = {
   legalName: 'Bay Greenery, LLC',
   url: 'https://www.baygreenery.com',
 
-  /* Booking form. Will be replaced by the on-site quote form. */
-  bookingFormUrl:
-    'https://docs.google.com/forms/d/e/1FAIpQLSfeggzXtM4JuPyvAyuPcIi4_ynukz8hmkh02rMgCoelk4eL6A/viewform',
+  /* Where every "Book a Service" button goes: the on-site quote form. */
+  bookingFormUrl: '/quote/',
+
+  /* Cloudflare Turnstile (spam protection) public site key for the quote form. */
+  turnstileSiteKey: '0x4AAAAAAGGVSukJ4TykaFvY',
 
   /* Google Business profile, reviews tab. Blank hides the button. */
   googleReviewsUrl:
