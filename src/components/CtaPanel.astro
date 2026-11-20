@@ -1,12 +1,13 @@
 ---
 import { site } from '../data/site';
-interface Props { heading?: string; text?: string }
-const { heading = 'Ready to get started?', text = `Tell us about your project. We serve the South Bay and Peninsula. Call ${site.phone} or book online.` } = Astro.props;
+interface Props { heading?: string; text?: string; service?: string }
+const { heading = 'Ready to get started?', text = `Tell us about your project. We serve the South Bay and Peninsula. Call ${site.phone} or request a quote online.`, service } = Astro.props;
+const href = service ? `${site.bookingFormUrl}?service=${service}` : site.bookingFormUrl;
 ---
 <aside class="cta-panel">
   <div>
     <h2>{heading}</h2>
     <p>{text}</p>
   </div>
-  <a class="cta-button js-booking-link" href={site.bookingFormUrl}>Book a Service &rarr;</a>
+  <a class="cta-button" href={href}>Request a Quote &rarr;</a>
 </aside>

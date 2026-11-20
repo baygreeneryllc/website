@@ -1,14 +1,26 @@
 // Cloudflare Workers configuration for baygreenery.com.
-// The site is static (built by Astro into dist/). Server code for the
-// quote form and upload page will be added here later as "main".
+// The site is static (built by Astro into dist/). The Worker in
+// src/worker/index.ts only runs for /api/* (the quote form).
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "baygreenery",
+  "main": "src/worker/index.ts",
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "html_handling": "auto-trailing-slash"
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/api/*"]
   },
+  "r2_buckets": [
+    // Private backup of every quote request (form fields + photos).
+    { "binding": "QUOTES", "bucket_name": "baygreenery-quote-requests" }
+  ],
+  "vars": {
+    "QUOTE_TO": "ops@baygreenery.com",
+    "QUOTE_FROM": "Bay Greenery Website <website@baygreenery.com>"
+  },
+  // Secrets (set in Cloudflare, not here): RESEND_API_KEY, TURNSTILE_SECRET
   "observability": { "enabled": true }
 }
