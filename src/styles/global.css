@@ -1331,17 +1331,40 @@ img { max-width: 100%; display: block; }
 .radio-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.4rem; }
 .radio-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
 .photo-drop {
-  display: block; position: relative;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem;
   border: 2px dashed rgba(123, 140, 104, 0.5); border-radius: var(--radius-md);
-  padding: 1.25rem; text-align: center; cursor: pointer;
+  padding: 1.5rem 1.25rem; text-align: center;
   background: rgba(123, 140, 104, 0.06);
+  transition: background 0.15s, border-color 0.15s;
 }
-.photo-drop input { display: block; margin: 0 auto 0.5rem; max-width: 100%; }
+.photo-drop.is-dragover { background: rgba(123, 140, 104, 0.18); border-color: var(--color-accent-green); }
+.photo-drop.is-full { opacity: 0.6; }
+.photo-drop-button {
+  position: relative; display: inline-block; cursor: pointer;
+  background: #fff; color: var(--color-accent-green-dark); font-weight: 700; font-size: 0.95rem;
+  border: 1px solid var(--color-accent-green); border-radius: var(--radius-pill);
+  padding: 0.5rem 1.1rem;
+}
+.photo-drop-button:hover { background: rgba(123, 140, 104, 0.1); }
+.photo-drop-button:focus-within { outline: 2px solid var(--color-accent-green); outline-offset: 2px; }
+.photo-drop-button input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
 .photo-drop-text { font-size: 0.9rem; color: var(--color-text-muted); }
-.photo-list { list-style: none; padding: 0; margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted); }
-.photo-list li::before { content: "✓ "; color: var(--color-accent-green); }
-.photo-list .photo-list-warn { color: #b5462f; }
-.photo-list .photo-list-warn::before { content: ""; }
+.photo-message { color: #b5462f; font-size: 0.85rem; font-weight: 600; margin: 0.25rem 0 0; }
+.photo-list { list-style: none; padding: 0; margin: 0.5rem 0 0; display: grid; gap: 0.4rem; }
+.photo-list li {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: #fff; border: 1px solid rgba(60, 74, 85, 0.12); border-radius: var(--radius-sm);
+  padding: 0.35rem 0.5rem 0.35rem 0.6rem; font-size: 0.9rem;
+}
+.photo-list li::before { content: "✓"; color: var(--color-accent-green); font-weight: 700; }
+.photo-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex: none; }
+.photo-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text); }
+.photo-size { color: var(--color-text-muted); font-size: 0.8rem; flex: none; }
+.photo-remove {
+  flex: none; width: 2rem; height: 2rem; border: 0; border-radius: 50%;
+  background: transparent; color: #c62828; font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.photo-remove:hover, .photo-remove:focus-visible { background: rgba(198, 40, 40, 0.1); }
 .hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 .turnstile-box { margin: 1.5rem 0 1rem; min-height: 65px; }
 .form-error { color: #b5462f; font-weight: 600; margin: 0 0 1rem; }

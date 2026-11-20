@@ -66,12 +66,16 @@ const cities = [...new Set(['San Jose', 'Almaden Valley', 'Cupertino', 'Campbell
           </label>
 
           <div class="form-field form-field-wide">
-            <span>Photos (optional, up to 10)</span>
-            <label class="photo-drop">
-              <input id="quote-photos" name="photos" type="file" accept="image/*" multiple>
-              <span class="photo-drop-text">Add photos of the area. They help us give a more accurate quote.</span>
-            </label>
-            <ul id="photo-list" class="photo-list" aria-live="polite"></ul>
+            <span id="photos-label">Photos (optional, up to 10)</span>
+            <div id="photo-drop" class="photo-drop">
+              <label class="photo-drop-button">
+                <input id="quote-photos" type="file" accept="image/*" multiple aria-labelledby="photos-label">
+                Choose photos
+              </label>
+              <span class="photo-drop-text">or drag them here. Photos of the area help us give a more accurate quote.</span>
+            </div>
+            <p id="photo-message" class="photo-message" aria-live="polite" hidden></p>
+            <ul id="photo-list" class="photo-list"></ul>
           </div>
 
           <fieldset class="form-field form-field-wide">
@@ -146,21 +150,93 @@ const cities = [...new Set(['San Jose', 'Almaden Valley', 'Cupertino', 'Campbell
   ts.onload = () => (window as any).turnstile?.render('#turnstile', { sitekey, theme: 'light' });
   document.head.appendChild(ts);
 
-  photosInput.addEventListener('change', () => {
-    const files = Array.from(photosInput.files ?? []);
+  /* Attached photos are kept here, so choosing or dragging more photos
+     adds to the list instead of replacing it. Each has a remove (×) button. */
+  const dropZone = document.getElementById('photo-drop') as HTMLDivElement;
+  const photoMessage = document.getElementById('photo-message') as HTMLParagraphElement;
+  type Attached = { file: File; url: string };
+  let attached: Attached[] = [];
+
+  const sameFile = (a: File, b: File) => a.name === b.name && a.size === b.size && a.lastModified === b.lastModified;
+  const isImage = (f: File) => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name);
+  const formatSize = (bytes: number) => (bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`);
+
+  function addPhotos(files: File[]) {
+    const notes: string[] = [];
+    const notImages = files.filter((f) => !isImage(f));
+    if (notImages.length) notes.push(`${notImages.length === 1 ? `"${notImages[0].name}" isn't a photo` : `${notImages.length} files aren't photos`} and ${notImages.length === 1 ? 'wasn\'t' : 'weren\'t'} added.`);
+    let skipped = 0;
+    for (const f of files.filter(isImage)) {
+      if (attached.some((a) => sameFile(a.file, f))) continue; // already attached
+      if (attached.length >= MAX_PHOTOS) { skipped++; continue; }
+      attached.push({ file: f, url: URL.createObjectURL(f) });
+    }
+    if (skipped) notes.push(`You can attach up to ${MAX_PHOTOS} photos. ${skipped} ${skipped === 1 ? 'photo wasn\'t' : 'photos weren\'t'} added.`);
+    photoMessage.textContent = notes.join(' ');
+    photoMessage.hidden = notes.length === 0;
+    renderPhotos();
+  }
+
+  function removePhoto(index: number) {
+    URL.revokeObjectURL(attached[index].url);
+    attached.splice(index, 1);
+    photoMessage.hidden = true;
+    renderPhotos();
+  }
+
+  function renderPhotos() {
     photoList.innerHTML = '';
-    files.slice(0, MAX_PHOTOS).forEach((f) => {
+    attached.forEach((a, i) => {
       const li = document.createElement('li');
-      li.textContent = f.name;
+      const thumb = document.createElement('img');
+      thumb.src = a.url;
+      thumb.alt = '';
+      thumb.className = 'photo-thumb';
+      thumb.onerror = () => thumb.remove(); // e.g. HEIC preview not supported
+      const name = document.createElement('span');
+      name.className = 'photo-name';
+      name.textContent = a.file.name;
+      const size = document.createElement('span');
+      size.className = 'photo-size';
+      size.textContent = formatSize(a.file.size);
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'photo-remove';
+      remove.setAttribute('aria-label', `Remove ${a.file.name}`);
+      remove.textContent = '×';
+      remove.addEventListener('click', () => removePhoto(i));
+      li.append(thumb, name, size, remove);
       photoList.appendChild(li);
     });
-    if (files.length > MAX_PHOTOS) {
-      const li = document.createElement('li');
-      li.className = 'photo-list-warn';
-      li.textContent = `Only the first ${MAX_PHOTOS} photos will be sent.`;
-      photoList.appendChild(li);
-    }
+    dropZone.classList.toggle('is-full', attached.length >= MAX_PHOTOS);
+  }
+
+  photosInput.addEventListener('change', () => {
+    addPhotos(Array.from(photosInput.files ?? []));
+    photosInput.value = ''; // allow choosing the same photo again after removing it
   });
+
+  // Drag and drop onto the photo box.
+  ['dragenter', 'dragover'].forEach((type) =>
+    dropZone.addEventListener(type, (e) => {
+      e.preventDefault();
+      dropZone.classList.add('is-dragover');
+    }),
+  );
+  ['dragleave', 'dragend'].forEach((type) =>
+    dropZone.addEventListener(type, (e) => {
+      const to = (e as DragEvent).relatedTarget as Node | null;
+      if (!to || !dropZone.contains(to)) dropZone.classList.remove('is-dragover');
+    }),
+  );
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('is-dragover');
+    addPhotos(Array.from((e as DragEvent).dataTransfer?.files ?? []));
+  });
+  // A photo dropped just outside the box shouldn't open in the browser and lose the form.
+  window.addEventListener('dragover', (e) => e.preventDefault());
+  window.addEventListener('drop', (e) => e.preventDefault());
 
   /* Shrink photos in the browser before upload: faster on phones, and
      re-encoding removes location (GPS) and camera data. */
@@ -201,7 +277,7 @@ const cities = [...new Set(['San Jose', 'Almaden Valley', 'Cupertino', 'Campbell
     submit.textContent = 'Sending…';
     try {
       data.delete('photos');
-      const files = Array.from(photosInput.files ?? []).slice(0, MAX_PHOTOS);
+      const files = attached.map((a) => a.file).slice(0, MAX_PHOTOS);
       for (const [i, f] of files.entries()) {
         submit.textContent = `Preparing photo ${i + 1} of ${files.length}…`;
         const blob = await shrink(f);
