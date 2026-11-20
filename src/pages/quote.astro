@@ -31,8 +31,10 @@ const cities = [...new Set(['San Jose', 'Almaden Valley', 'Cupertino', 'Campbell
   <main class="page-main">
     <div class="container">
       <Breadcrumbs items={crumbs} />
-      <h1 class="page-title">Request a Quote</h1>
-      <p class="page-lead">Tell us about your project and we'll get back to you as soon as we can. Prefer to talk? Call <a href={`tel:${site.phoneTel}`}>{site.phone}</a>.</p>
+      <div id="quote-intro">
+        <h1 class="page-title">Request a Quote</h1>
+        <p class="page-lead">Tell us about your project and we'll get back to you as soon as we can. Prefer to talk? Call <a href={`tel:${site.phoneTel}`}>{site.phone}</a>.</p>
+      </div>
 
       <form id="quote-form" class="quote-form" action="/api/quote" method="post" enctype="multipart/form-data" novalidate data-sitekey={site.turnstileSiteKey}>
         <div class="form-grid">
@@ -288,9 +290,12 @@ const cities = [...new Set(['San Jose', 'Almaden Valley', 'Cupertino', 'Campbell
       const res = await fetch('/api/quote', { method: 'POST', body: data });
       const out = await res.json().catch(() => ({ ok: false, error: '' }));
       if (!res.ok || !out.ok) throw new Error(out.error || 'Something went wrong. Please try again or call us.');
+      // Show only the confirmation: hide the form and its heading/intro.
       form.hidden = true;
+      (document.getElementById('quote-intro') as HTMLDivElement).hidden = true;
       thanks.hidden = false;
       thanks.focus();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       (window as any).gtag?.('event', 'generate_lead', { form: 'quote' });
     } catch (err) {
       showError((err as Error).message);
