@@ -38,7 +38,7 @@ const reviews = [
     <div class="hero-content">
       <div class="hero-top">
         <img class="hero-logo" src="/images/logo-baygreenery.png" alt="Bay Greenery" width="1624" height="484">
-        <h1 class="hero-tagline">Landscape Construction, Maintenance &amp; Repair in the South Bay and Peninsula</h1>
+        <h1 class="visually-hidden">Landscape Construction, Maintenance &amp; Repair in the South Bay and Peninsula</h1>
         <p class="hero-license">{site.license}</p>
       </div>
       <a class="hero-cta js-booking-link" href={site.bookingFormUrl}>
@@ -58,7 +58,7 @@ const reviews = [
       <div class="carousel" id="servicesCarousel">
         <div class="carousel-viewport">
           <div class="carousel-track">
-            {services.map((s) => (
+            {services.filter((s) => s.id !== 'landscape-repair').map((s) => (
               <a class="service-card" href={`/services/${s.id}/`}>
                 <div class="service-card-image">
                   <Image src={s.data.tile} alt={s.data.tileAlt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 400px" format="webp" quality={75} loading="lazy" />
