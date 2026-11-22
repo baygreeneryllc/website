@@ -30,8 +30,11 @@
     document.querySelectorAll('.js-booking-link').forEach(function (el) {
       if (config.bookingFormUrl) {
         el.setAttribute('href', config.bookingFormUrl);
-        el.setAttribute('target', '_blank');
-        el.setAttribute('rel', 'noopener');
+        // Only open in a new tab when the form lives on another site.
+        if (/^https?:/.test(config.bookingFormUrl)) {
+          el.setAttribute('target', '_blank');
+          el.setAttribute('rel', 'noopener');
+        }
       }
     });
 

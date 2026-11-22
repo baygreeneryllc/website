@@ -1301,3 +1301,83 @@ img { max-width: 100%; display: block; }
   .site-nav .site-nav-cta { padding: 0.4rem 0.9rem; }
 }
 .hero-logo, .leave-review-google-logo { height: auto; }
+
+/* Quote request form */
+.quote-form {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 24px rgba(60, 74, 85, 0.08);
+  padding: 2rem;
+  max-width: var(--container-narrow);
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem 1.5rem; }
+.form-field { display: flex; flex-direction: column; gap: 0.4rem; border: 0; padding: 0; margin: 0; min-width: 0; }
+.form-field-wide { grid-column: 1 / -1; }
+.form-field > span, .form-field legend { font-weight: 600; font-size: 0.95rem; color: var(--color-brand-slate); padding: 0; }
+.form-field em { color: #b5462f; font-style: normal; }
+.form-field input[type="text"], .form-field input[type="tel"], .form-field input[type="email"],
+.form-field select, .form-field textarea {
+  font: inherit; font-size: 1rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(60, 74, 85, 0.25);
+  border-radius: var(--radius-sm);
+  background: #fff; color: var(--color-text);
+  width: 100%;
+}
+.form-field textarea { resize: vertical; min-height: 140px; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  outline: 2px solid var(--color-accent-green); outline-offset: 1px; border-color: transparent;
+}
+.radio-row { display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem; margin-top: 0.4rem; }
+.radio-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.95rem; }
+.photo-drop {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.5rem 1rem;
+  border: 2px dashed rgba(123, 140, 104, 0.5); border-radius: var(--radius-md);
+  padding: 1.5rem 1.25rem; text-align: center;
+  background: rgba(123, 140, 104, 0.06);
+  transition: background 0.15s, border-color 0.15s;
+}
+.photo-drop.is-dragover { background: rgba(123, 140, 104, 0.18); border-color: var(--color-accent-green); }
+.photo-drop.is-full { opacity: 0.6; }
+.photo-drop-button {
+  position: relative; display: inline-block; cursor: pointer;
+  background: #fff; color: var(--color-accent-green-dark); font-weight: 700; font-size: 0.95rem;
+  border: 1px solid var(--color-accent-green); border-radius: var(--radius-pill);
+  padding: 0.5rem 1.1rem;
+}
+.photo-drop-button:hover { background: rgba(123, 140, 104, 0.1); }
+.photo-drop-button:focus-within { outline: 2px solid var(--color-accent-green); outline-offset: 2px; }
+.photo-drop-button input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+.photo-drop-text { font-size: 0.9rem; color: var(--color-text-muted); }
+.photo-message { color: #b5462f; font-size: 0.85rem; font-weight: 600; margin: 0.25rem 0 0; }
+.photo-list { list-style: none; padding: 0; margin: 0.5rem 0 0; display: grid; gap: 0.4rem; }
+.photo-list li {
+  display: flex; align-items: center; gap: 0.75rem;
+  background: #fff; border: 1px solid rgba(60, 74, 85, 0.12); border-radius: var(--radius-sm);
+  padding: 0.35rem 0.5rem 0.35rem 0.6rem; font-size: 0.9rem;
+}
+.photo-list li::before { content: "✓"; color: var(--color-accent-green); font-weight: 700; }
+.photo-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; flex: none; }
+.photo-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-text); }
+.photo-size { color: var(--color-text-muted); font-size: 0.8rem; flex: none; }
+.photo-remove {
+  flex: none; width: 2rem; height: 2rem; border: 0; border-radius: 50%;
+  background: transparent; color: #c62828; font-size: 1.5rem; line-height: 1; cursor: pointer;
+}
+.photo-remove:hover, .photo-remove:focus-visible { background: rgba(198, 40, 40, 0.1); }
+.hp-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+.turnstile-box { margin: 1.5rem 0 1rem; min-height: 65px; }
+.form-error { color: #b5462f; font-weight: 600; margin: 0 0 1rem; }
+.form-note { font-size: 0.8rem; color: var(--color-text-muted); margin: 1rem 0 0; }
+.quote-form .cta-button { border: 0; cursor: pointer; font: inherit; font-weight: 700; font-size: 1rem; }
+.quote-form .cta-button:disabled { opacity: 0.7; cursor: progress; }
+.quote-thanks {
+  background: var(--color-card-bg); border-radius: var(--radius-lg);
+  padding: 2rem; max-width: var(--container-narrow);
+  box-shadow: 0 6px 24px rgba(60, 74, 85, 0.08);
+}
+.quote-thanks h2 { color: var(--color-brand-slate); font-size: 1.6rem; }
+@media (max-width: 700px) {
+  .quote-form { padding: 1.25rem; }
+  .form-grid { grid-template-columns: 1fr; }
+}
