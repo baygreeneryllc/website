@@ -9,9 +9,11 @@ photos:
   - src: ../../assets/projects/landscape-lighting/01.jpg
     label: After
     alt: "Low-voltage step lights along a hillside stairway in Portola Valley at dusk"
+    tags: [lighting, steps-stairs]
   - src: ../../assets/projects/landscape-lighting/02.jpg
     label: After
     alt: "Stone entry column lit with landscape lighting in Portola Valley"
+    tags: [lighting, hardscape]
 ---
 
 A hillside property in Portola Valley with a long outdoor stairway. We installed low-voltage step lights along the stairs and an accent light on the stone entry column, so the walk up is safe after dark and the entry stands out.

@@ -330,8 +330,11 @@
     function open(tile) {
       const scope = tile.closest('.project-photo-grid')
         || tile.closest('.gallery-grid')
+        || tile.closest('.pg-shots')
         || document;
-      currentSet = Array.from(scope.querySelectorAll('.gallery-tile[data-src]'));
+      // Only photos currently on screen (the gallery hides filtered-out ones).
+      currentSet = Array.from(scope.querySelectorAll('.gallery-tile[data-src]'))
+        .filter(function (t) { return !t.closest('[hidden]'); });
       const idx = currentSet.indexOf(tile);
       show(idx >= 0 ? idx : 0);
       overlay.classList.add('is-open');
