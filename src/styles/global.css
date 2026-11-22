@@ -1430,6 +1430,8 @@ img { max-width: 100%; display: block; }
   .pg-clear { padding: 0.4rem 0.2rem; font-size: 0.8rem; }
   .pg-menu { position: static; }
   .pg-pop { left: 0.6rem; right: 0.6rem; min-width: 0; }
+}
+
 /* Quote request form */
 .quote-form {
   background: var(--color-card-bg);
