@@ -7,6 +7,6 @@ description: Landscape remodels, artificial turf, sod, irrigation, and decompose
 order: 2
 ---
 
-Almaden Valley, in south San Jose near the foothills, is one of the areas where we do the most work. Homes here tend to have generous front and back yards, mature trees, and irrigation systems that have been patched over the years. That makes it a natural fit for remodels, lawn replacements, and irrigation upgrades.
+Almaden Valley, in south San Jose up against the foothills, is where a lot of our work happens. Yards here are on the larger side, with mature trees and irrigation that has usually been added onto over the years.
 
-Below are projects we've completed in Almaden Valley.
+Our projects here include a front-yard remodel, artificial turf, new sod, a decomposed granite driveway extension, and plenty of irrigation work.

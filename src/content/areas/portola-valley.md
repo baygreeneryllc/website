@@ -6,6 +6,6 @@ description: Landscape lighting, sod, and landscape construction in Portola Vall
 order: 4
 ---
 
-Portola Valley's wooded, hillside properties call for landscapes that work with the terrain and the surrounding natural setting. Our work here includes low-voltage landscape lighting along steps and paths, and lawn installations.
+Most Portola Valley properties are wooded and on a slope, and the landscapes that work best here fit the setting instead of fighting it. Our work here so far includes low-voltage lighting along a hillside stairway and an entry, and a new lawn.
 
-Below are projects we've completed in Portola Valley. We also work in neighboring [Ladera](/areas/ladera/).
+We also work next door in [Ladera](/areas/ladera/).

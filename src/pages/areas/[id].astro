@@ -20,7 +20,6 @@ const all = await getAllAreas();
 const published = await getPublishedAreas();
 const projects = projectsInArea(area, await getProjects(), all);
 const services = await getServices();
-const usedServices = services.filter((s) => projects.some((p) => p.data.services.some((r) => r.id === s.id)));
 const parent = area.data.parent ? all.find((a) => a.id === area.data.parent!.id) : undefined;
 const children = published.filter((a) => a.data.parent?.id === area.id);
 const nearby = published.filter((a) => a.id !== area.id && a.id !== parent?.id && !children.includes(a));
@@ -62,11 +61,11 @@ const schema = [
       </section>
 
       <section class="page-section">
-        <h2>Our services in {area.data.name}</h2>
+        <h2>What we do in {area.data.name}</h2>
+        <p>The projects above are a sample. In {area.data.name} we take on everything we offer, from irrigation repairs and regular maintenance to full design-and-build projects.</p>
         <ul class="tag-list">
-          {(usedServices.length ? usedServices : services).map((s) => <li><a href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
+          {services.map((s) => <li><a href={`/services/${s.id}/`}>{s.data.title}</a></li>)}
         </ul>
-        <p>We offer <a href="/services/">all of our services</a> in {area.data.name}, including <a href="/services/irrigation-repair/">irrigation repair</a> and <a href="/services/landscape-design-build/">landscape design and build</a>.</p>
       </section>
 
       <CtaPanel heading={`Planning a project in ${area.data.name}?`} />
