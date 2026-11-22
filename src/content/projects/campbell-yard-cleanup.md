@@ -9,9 +9,11 @@ photos:
   - src: ../../assets/projects/yard-cleanup/01-before.jpg
     label: Before
     alt: "Leaf-covered, overgrown front yard in Campbell before cleanup"
+    tags: [cleanup]
   - src: ../../assets/projects/yard-cleanup/02-after.jpg
     label: After
     alt: "Front yard in Campbell after a full cleanup, with clear walkway and tidy beds"
+    tags: [pathways, planting, cleanup]
 ---
 
 A front yard in Campbell buried under leaves and overgrowth. We cleared it, cleaned up the beds and edges, and hauled away the green waste, leaving the property tidy and presentable.

@@ -9,12 +9,15 @@ photos:
   - src: ../../assets/projects/landscape-lighting/03.jpg
     label: After
     alt: "Low-voltage path lights along a brick walkway and raised planter in Ladera at dusk"
+    tags: [lighting, pathways, planting, hardscape]
   - src: ../../assets/projects/landscape-lighting/04.jpg
     label: After
     alt: "Landscape lighting around a lawn and garden border in Ladera at dusk"
+    tags: [lighting, lawn-sod, planting]
   - src: ../../assets/projects/landscape-lighting/05.jpg
     label: After
     alt: "Lit flagstone side-yard path with low-voltage lighting in Ladera"
+    tags: [lighting, pathways, hardscape]
 ---
 
 Low-voltage landscape lighting for a home in Ladera. Fixtures light the brick walkway, the garden borders around the lawn, and a flagstone side-yard path, making them safe to walk at night and showing off the garden after dark.

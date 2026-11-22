@@ -6,6 +6,6 @@ description: Landscape lighting, sod, and landscape construction in Portola Vall
 order: 4
 ---
 
-Portola Valley's wooded, hillside properties call for landscapes that work with the terrain and the surrounding natural setting. Our work here includes low-voltage landscape lighting along steps and paths, and lawn installations.
+The San Andreas Fault runs right through Portola Valley, which is part of why the land here is so hilly and wooded. Landscapes that work here fit the slope instead of fighting it.
 
-Below are projects we've completed in Portola Valley. We also work in neighboring [Ladera](/areas/ladera/).
+So far our work in Portola Valley includes low-voltage lighting along a hillside stairway and an entry, plus a new lawn. We also work next door in [Ladera](/areas/ladera/).

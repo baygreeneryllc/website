@@ -1,0 +1,266 @@
+---
+/* The Project Gallery: a sticky filter bar (search, Type of Work,
+   Service Area), three views (Project Tiles, Finished Work, Feature
+   Finder) and sorting. Used by /projects/ and by every area page, where
+   it is pre-filtered to that area.
+
+   Everything is rendered as plain HTML (so search engines and visitors
+   without JavaScript see every project and photo); the script below
+   only shows, hides and reorders what is already on the page. */
+import { Image, getImage } from 'astro:assets';
+import { coverOf, projectAreaIds, getProjects, type Project, type Area, type Service } from '../lib/content';
+import { featureTags } from '../data/feature-tags';
+
+interface Props {
+  projects: Project[];
+  allAreas: Area[];
+  publishedAreas: Area[];
+  services: Service[];
+  /* Set on an area page: the area the gallery is fixed to. */
+  area?: Area;
+}
+const { projects, allAreas, publishedAreas, services, area } = Astro.props;
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const monthLabel = (m?: string) => (m ? `${MONTHS[Number(m.slice(5, 7)) - 1]} ${m.slice(0, 4)}` : '');
+const areaById = (id: string) => allAreas.find((a) => a.id === id);
+const svcById = (id: string) => services.find((s) => s.id === id);
+const withParents = (id: string) => {
+  const ids: string[] = [];
+  let cur = areaById(id);
+  while (cur) { ids.push(cur.id); cur = cur.data.parent ? areaById(cur.data.parent.id) : undefined; }
+  return ids;
+};
+
+/* On an area page, keep only photos taken in that area (or its neighborhoods). */
+const inScope = (ids: string[]) => !area || ids.includes(area.id);
+
+const items = await Promise.all(
+  projects.map(async (p) => {
+    const areaIds = [...projectAreaIds(p, allAreas)];
+    const areaNames = p.data.areas.map((r) => areaById(r.id)?.data.name).filter(Boolean) as string[];
+    const svc = p.data.services.map((r) => svcById(r.id)).filter(Boolean) as Service[];
+    const photos = await Promise.all(
+      p.data.photos.map(async (ph, i) => {
+        const ids = ph.area ? withParents(ph.area.id) : areaIds;
+        const full = await getImage({ src: ph.src, width: 1400, format: 'webp', quality: 70 });
+        return { ...ph, i, ids, full: full.src, areaName: ph.area ? areaById(ph.area.id)?.data.name ?? areaNames[0] : areaNames[0] };
+      }),
+    );
+    return {
+      p, areaIds, areaNames, svc,
+      photos: photos.filter((ph) => inScope(ph.ids)),
+      name: p.data.kind === 'collection' ? p.data.title : p.data.title.split(' — ')[0],
+      text: [p.data.title, p.data.summary, ...p.data.photos.map((x) => x.alt)].join(' ').toLowerCase(),
+    };
+  }),
+);
+
+const usedTags = featureTags.filter((t) => items.some((it) => it.photos.some((ph) => ph.tags.includes(t.id))));
+const hasDates = projects.some((p) => p.data.completed);
+const hasAdded = projects.some((p) => p.data.added);
+const finishedCount = items.reduce((n, it) => n + it.photos.filter((ph) => ph.label === 'After').length, 0);
+const usedServices = services.filter((s) => items.some((it) => it.svc.some((x) => x.id === s.id)));
+
+/* Service Area menu: top-level areas with their neighborhoods. */
+const topAreas = publishedAreas.filter((a) => !a.data.parent || !publishedAreas.some((b) => b.id === a.data.parent!.id));
+const childrenOf = (a: Area) => publishedAreas.filter((c) => c.data.parent?.id === a.id);
+const everyProject = await getProjects();
+const areaCount = (a: Area) => everyProject.filter((p) => projectAreaIds(p, allAreas).has(a.id)).length;
+
+const sortOptions = [
+  ...(hasDates ? [['date', 'Date of project (newest)'], ['date-old', 'Date of project (oldest)']] : [['featured', 'Featured']]),
+  ...(area && childrenOf(area).length === 0 ? [] : [['location', 'Location']]),
+  ['service', 'Type of work'],
+  ['photos', 'Most photos'],
+  ...(hasAdded ? [['added', 'Recently added']] : []),
+];
+---
+<div class="pg" data-gallery data-has-dates={hasDates ? '1' : undefined}>
+  <div class="pg-views" role="tablist" aria-label="Gallery views">
+    <button class="pg-view is-on" role="tab" type="button" aria-selected="true" data-view="tiles"><b>Project Tiles</b><span>One card per project, with its story and before-and-after photos</span></button>
+    {finishedCount > 0 && <button class="pg-view" role="tab" type="button" aria-selected="false" data-view="finished"><b>Finished Work</b><span>Only the completed results, every project side by side</span></button>}
+    {usedTags.length > 0 && <button class="pg-view" role="tab" type="button" aria-selected="false" data-view="features"><b>Feature Finder</b><span>Pick a feature and see it from every project</span></button>}
+  </div>
+
+  <div class="pg-bar" role="search">
+    <label class="pg-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
+      <input type="search" data-q placeholder="Search projects or photos" aria-label="Search projects or photos" />
+    </label>
+    <details class="pg-menu" data-menu>
+      <summary>Type of Work <span class="pg-n" data-svc-n></span></summary>
+      <div class="pg-pop">
+        {usedServices.map((s) => (
+          <button type="button" class="pg-opt" data-svc={s.id} aria-pressed="false">
+            <span>{s.data.title}</span><span class="pg-cnt">{items.filter((it) => it.svc.some((x) => x.id === s.id)).length}</span>
+          </button>
+        ))}
+      </div>
+    </details>
+    <details class="pg-menu" data-menu>
+      <summary>Service Area {area && <span class="pg-n">(1)</span>}</summary>
+      <div class="pg-pop">
+        <a class={`pg-opt${area ? '' : ' is-on'}`} href="/projects/" aria-current={area ? undefined : 'page'}><span>All areas</span></a>
+        {topAreas.map((a) => (
+          <>
+            <a class={`pg-opt${area?.id === a.id ? ' is-on' : ''}`} href={`/areas/${a.id}/`} aria-current={area?.id === a.id ? 'page' : undefined}><span>{a.data.name}</span><span class="pg-cnt">{areaCount(a)}</span></a>
+            {childrenOf(a).map((c) => (
+              <a class={`pg-opt pg-sub${area?.id === c.id ? ' is-on' : ''}`} href={`/areas/${c.id}/`} aria-current={area?.id === c.id ? 'page' : undefined}><span>{c.data.name}</span><span class="pg-cnt">{areaCount(c)}</span></a>
+            ))}
+          </>
+        ))}
+      </div>
+    </details>
+    {area ? <a class="pg-clear" href="/projects/">Clear all</a> : <button type="button" class="pg-clear" data-clear>Clear all</button>}
+  </div>
+
+  <div class="pg-tags" data-tags hidden>
+    {usedTags.map((t) => (
+      <button type="button" class="pg-tag" data-tag={t.id} aria-pressed="false">{t.name} <span class="pg-cnt">{items.reduce((n, it) => n + it.photos.filter((ph) => ph.tags.includes(t.id)).length, 0)}</span></button>
+    ))}
+  </div>
+
+  <div class="pg-toolbar">
+    <span class="pg-count" data-count aria-live="polite">{items.length} projects</span>
+    <label class="pg-sort">Sort by
+      <select data-sort>
+        {sortOptions.map(([v, l]) => <option value={v}>{l}</option>)}
+      </select>
+    </label>
+  </div>
+
+  <div class="pg-cards" data-results="tiles">
+    {items.map((it) => {
+      const c = coverOf(it.p);
+      const labels = it.p.data.photos.map((x) => x.label);
+      const ba = labels.includes('Before') && labels.includes('After');
+      return (
+        <a class="pg-card" href={`/projects/${it.p.id}/`} data-item data-p={it.p.id} data-svc={it.svc.map((s) => s.id).join(' ')} data-text={it.text}
+          data-date={it.p.data.completed ?? ''} data-added={it.p.data.added ?? ''} data-n={it.p.data.photos.length} data-order={it.p.data.order}
+          data-loc={it.areaNames[0] ?? ''} data-svcname={it.svc[0]?.data.title ?? ''}>
+          <div class="pg-card-img">
+            <Image src={c.src} alt={c.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 380px" format="webp" quality={75} loading="lazy" />
+            <div class="pg-badges">{ba && <span class="pg-badge">Before &amp; after</span>}{it.p.data.kind === 'collection' && <span class="pg-badge">Collection</span>}</div>
+            <span class="pg-photo-n">{it.p.data.photos.length} photos</span>
+          </div>
+          <div class="pg-card-body">
+            <h3>{it.name}</h3>
+            <div class="pg-meta">
+              <span class="pg-svc">{it.svc.map((s) => s.data.title).join(', ')}</span>
+              <span>{it.areaNames.join(', ')}{it.p.data.completed && <> · {monthLabel(it.p.data.completed)}</>}</span>
+            </div>
+            <p>{it.p.data.summary}</p>
+          </div>
+        </a>
+      );
+    })}
+  </div>
+
+  <div class="pg-shots" data-results="photos" hidden>
+    {items.flatMap((it) => it.photos.map((ph) => (
+      <figure class="pg-shot" data-item data-photo data-p={it.p.id} data-label={ph.label ?? ''} data-tags={ph.tags.join(' ')}
+        data-svc={it.svc.map((s) => s.id).join(' ')} data-text={`${it.text} ${ph.alt.toLowerCase()}`}
+        data-date={it.p.data.completed ?? ''} data-added={it.p.data.added ?? ''} data-n={it.p.data.photos.length} data-order={it.p.data.order * 1000 + ph.i}
+        data-loc={ph.areaName ?? ''} data-svcname={it.svc[0]?.data.title ?? ''}>
+        <button class="gallery-tile" type="button" data-src={ph.full} aria-label={ph.alt}>
+          <Image src={ph.src} alt={ph.alt} widths={[400, 800]} sizes="(max-width: 700px) 100vw, 380px" format="webp" quality={72} loading="lazy" />
+          {ph.label && <span class={`gallery-tile-label${ph.label === 'After' ? ' is-after' : ph.label === 'During' ? ' is-during' : ''}`}>{ph.label}</span>}
+        </button>
+        <figcaption>
+          <a href={`/projects/${it.p.id}/`}>{it.name}</a>
+          <small>{ph.areaName}{it.p.data.completed && <> · {monthLabel(it.p.data.completed)}</>}</small>
+          {ph.tags.length > 0 && <span class="pg-tagrow" data-tagrow hidden>{ph.tags.map((t) => <span class="pg-chip">{featureTags.find((f) => f.id === t)?.name}</span>)}</span>}
+        </figcaption>
+      </figure>
+    )))}
+  </div>
+
+  <div class="pg-empty" data-empty hidden>
+    <h3>Nothing matches these filters</h3>
+    <p>Remove a filter, or <button type="button" class="pg-link" data-clear>clear all filters</button>.</p>
+  </div>
+</div>
+
+<script>
+  function initGallery(root: HTMLElement) {
+    const $ = <T extends Element = HTMLElement>(s: string) => root.querySelector(s) as T;
+    const $$ = <T extends Element = HTMLElement>(s: string) => Array.from(root.querySelectorAll(s)) as T[];
+    const state = { view: 'tiles', q: '', svc: new Set<string>(), tags: new Set<string>(), sort: ($<HTMLSelectElement>('[data-sort]')).value };
+    const cards = $('[data-results="tiles"]');
+    const shots = $('[data-results="photos"]');
+
+    const sorters: Record<string, (a: HTMLElement, b: HTMLElement) => number> = {
+      featured: (a, b) => +a.dataset.order! - +b.dataset.order!,
+      date: (a, b) => (b.dataset.date || '').localeCompare(a.dataset.date || '') || +a.dataset.order! - +b.dataset.order!,
+      'date-old': (a, b) => (a.dataset.date || '9999').localeCompare(b.dataset.date || '9999') || +a.dataset.order! - +b.dataset.order!,
+      location: (a, b) => a.dataset.loc!.localeCompare(b.dataset.loc!) || +a.dataset.order! - +b.dataset.order!,
+      service: (a, b) => a.dataset.svcname!.localeCompare(b.dataset.svcname!) || +a.dataset.order! - +b.dataset.order!,
+      photos: (a, b) => +b.dataset.n! - +a.dataset.n! || +a.dataset.order! - +b.dataset.order!,
+      added: (a, b) => (b.dataset.added || '').localeCompare(a.dataset.added || '') || +a.dataset.order! - +b.dataset.order!,
+    };
+
+    function matches(el: HTMLElement) {
+      if (state.q && !el.dataset.text!.includes(state.q)) return false;
+      if (state.svc.size && !el.dataset.svc!.split(' ').some((s) => state.svc.has(s))) return false;
+      if (el.dataset.photo !== undefined) {
+        if (state.view === 'finished' && el.dataset.label !== 'After') return false;
+        if (state.view === 'features') {
+          const tags = el.dataset.tags!.split(' ').filter(Boolean);
+          if (!tags.length) return false;
+          if (state.tags.size && !tags.some((t) => state.tags.has(t))) return false;
+        }
+      }
+      return true;
+    }
+
+    function render() {
+      const photoView = state.view !== 'tiles';
+      cards.hidden = photoView; shots.hidden = !photoView;
+      $('[data-tags]').hidden = state.view !== 'features';
+      $$('[data-tagrow]').forEach((t) => { t.hidden = state.view !== 'features'; });
+      $$('[data-view]').forEach((b) => { const on = b.dataset.view === state.view; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', String(on)); });
+      $$('[data-svc]').filter((b) => b.tagName === 'BUTTON').forEach((b) => b.setAttribute('aria-pressed', String(state.svc.has(b.dataset.svc!))));
+      $$('[data-tag]').forEach((b) => b.setAttribute('aria-pressed', String(state.tags.has(b.dataset.tag!))));
+      $('[data-svc-n]').textContent = state.svc.size ? `(${state.svc.size})` : '';
+
+      const box = photoView ? shots : cards;
+      const els = $$('[data-item]').filter((e) => box.contains(e));
+      els.sort(sorters[state.sort] || sorters.featured).forEach((e) => box.appendChild(e));
+      let shown = 0; const projectsShown = new Set<string>();
+      els.forEach((e) => { const ok = matches(e); e.hidden = !ok; if (ok) { shown++; projectsShown.add(e.dataset.p!); } });
+      $('[data-count]').textContent = photoView
+        ? `${shown} photo${shown === 1 ? '' : 's'} from ${projectsShown.size} project${projectsShown.size === 1 ? '' : 's'}`
+        : `${shown} project${shown === 1 ? '' : 's'}`;
+      $('[data-empty]').hidden = shown > 0;
+    }
+
+    function clear() {
+      state.q = ''; state.svc.clear(); state.tags.clear();
+      ($<HTMLInputElement>('[data-q]')).value = '';
+      render();
+    }
+
+    root.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      $$<HTMLDetailsElement>('[data-menu][open]').forEach((d) => { if (!d.contains(t)) d.open = false; });
+      const view = t.closest<HTMLElement>('[data-view]');
+      const svc = t.closest<HTMLElement>('button[data-svc]');
+      const tag = t.closest<HTMLElement>('[data-tag]');
+      if (view) { state.view = view.dataset.view!; render(); }
+      else if (svc) { const k = svc.dataset.svc!; state.svc.has(k) ? state.svc.delete(k) : state.svc.add(k); render(); }
+      else if (tag) { const k = tag.dataset.tag!; state.tags.has(k) ? state.tags.delete(k) : state.tags.add(k); render(); }
+      else if (t.closest('[data-clear]')) clear();
+    });
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) $$<HTMLDetailsElement>('[data-menu][open]').forEach((d) => { d.open = false; });
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') $$<HTMLDetailsElement>('[data-menu][open]').forEach((d) => { d.open = false; });
+    });
+    $<HTMLInputElement>('[data-q]').addEventListener('input', (e) => { state.q = (e.target as HTMLInputElement).value.trim().toLowerCase(); render(); });
+    $<HTMLSelectElement>('[data-sort]').addEventListener('change', (e) => { state.sort = (e.target as HTMLSelectElement).value; render(); });
+    render();
+  }
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach(initGallery);
+</script>

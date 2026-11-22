@@ -1,6 +1,7 @@
 import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { featureTagIds } from './data/feature-tags';
 
 /* -----------------------------------------------------------------
    PROJECTS — one Markdown file per job (or per "collection" of
@@ -23,6 +24,9 @@ const projects = defineCollection({
       areas: z.array(reference('areas')).min(1),
       /* Month the job was finished, e.g. "2026-05". Optional. */
       completed: z.string().regex(/^\d{4}-\d{2}$/).optional(),
+      /* Day the project was added to the website, e.g. "2026-11-21". Optional;
+         used by the gallery's "Recently added" sort. */
+      added: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
       /* Lower numbers list first. */
       order: z.number().default(100),
       /* Set to false to hide a project (e.g. client opted out). */
@@ -35,6 +39,8 @@ const projects = defineCollection({
             label: z.enum(['Before', 'During', 'After', 'Detail']).optional(),
             /* Area this photo was taken in, when a collection spans areas. */
             area: reference('areas').optional(),
+            /* Feature tags for the gallery's Feature Finder (src/data/feature-tags.ts). */
+            tags: z.array(z.enum(featureTagIds)).default([]),
           }),
         )
         .min(1),

@@ -6,6 +6,6 @@ description: Fence replacement, yard cleanups, and landscape projects in Campbel
 order: 5
 ---
 
-Campbell sits between San Jose and Los Gatos, with a mix of classic ranch homes and newer builds. Our work here includes fence replacements and full yard cleanups that bring overgrown properties back to order.
+Campbell grew up around the fruit orchards and canneries of the Santa Clara Valley, and today it's a mix of older ranch homes and newer builds.
 
-Below are projects we've completed in Campbell.
+Our work here has included a fence replacement and a full cleanup that brought an overgrown front yard back under control.

@@ -6,6 +6,6 @@ description: Licensed landscape contractor in San Jose. Landscape remodels, irri
 order: 1
 ---
 
-San Jose is home turf for Bay Greenery. We work across the city, from established neighborhoods with mature trees and older irrigation systems to newer homes that need a landscape built from scratch. Much of the valley floor has heavy clay soil, so we pay close attention to grading, drainage, and soil prep, which make the difference between a landscape that thrives and one that struggles.
+San Jose is the largest city in the Bay Area, and it covers a lot of ground, from older neighborhoods with big trees to newer homes on bare lots. Much of it sits on heavy clay, so we put real time into grading, drainage, and soil prep before anything gets planted.
 
-Common projects here include lawn conversions and sod replacement, irrigation repair on aging sprinkler systems, decomposed granite paths and driveway extensions, and full yard remodels.
+Most of our work here is lawn replacement, irrigation repair, decomposed granite paths, and full yard remodels.

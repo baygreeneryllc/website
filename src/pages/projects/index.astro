@@ -1,16 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectsSidebar from '../../components/ProjectsSidebar.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
-import GalleryTile from '../../components/GalleryTile.astro';
+import ProjectGallery from '../../components/ProjectGallery.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { gallery } from '../../data/gallery';
-import { getProjects, getAllAreas } from '../../lib/content';
+import CtaPanel from '../../components/CtaPanel.astro';
+import { getProjects, getAllAreas, getPublishedAreas, getServices, coverOf } from '../../lib/content';
 import { breadcrumbSchema, businessId } from '../../lib/schema';
 import { absoluteUrl } from '../../data/site';
+import { gallery } from '../../data/gallery';
 
 const projects = await getProjects();
-const areas = await getAllAreas();
+const [allAreas, publishedAreas, services] = await Promise.all([getAllAreas(), getPublishedAreas(), getServices()]);
+const share = projects[0] ? coverOf(projects[0]) : gallery[1];
 const crumbs = [{ name: 'Home', href: '/' }, { name: 'Projects', href: '/projects/' }];
 const schema = [
   {
@@ -28,33 +28,19 @@ const schema = [
 <BaseLayout
   title="Landscape Project Gallery: San Jose & Peninsula | Bay Greenery"
   description="Recent Bay Greenery landscape projects in San Jose, Almaden Valley, Ladera, Portola Valley, and Campbell: remodels, retaining walls, irrigation, lighting, and more."
-  image={gallery[1].src}
-  imageAlt={gallery[1].alt}
+  image={share.src}
+  imageAlt={share.alt}
   schema={schema}
 >
-  <div class="portfolio-layout">
-    <ProjectsSidebar projects={projects} />
+  <main class="page-main">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <h1 class="page-title">Project Gallery</h1>
+      <p class="page-lead pg-lead">Recent work across the South Bay and Peninsula. Browse whole projects, see the finished results, or find a feature you want for your own yard.</p>
 
-    <main class="portfolio-content">
-      <section class="portfolio-section is-active">
-        <Breadcrumbs items={crumbs} />
-        <div class="portfolio-section-head">
-          <h1>Project Gallery</h1>
-          <p class="portfolio-section-lead">A walk through our recent endeavours across the South Bay and Peninsula. Choose a project for the full story and before-and-after photos, or browse every photo below.</p>
-        </div>
+      <ProjectGallery projects={projects} allAreas={allAreas} publishedAreas={publishedAreas} services={services} />
 
-        <div class="card-grid">
-          {projects.map((p) => <ProjectCard project={p} areas={areas} />)}
-        </div>
-
-        <div class="page-section">
-          <h2>All Photos</h2>
-          <p>Click any photo to view it full size and arrow through.</p>
-          <div class="gallery-grid">
-            {gallery.map((g) => <GalleryTile src={g.src} alt={g.alt} />)}
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+      <CtaPanel heading="Like what you see?" />
+    </div>
+  </main>
 </BaseLayout>

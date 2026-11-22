@@ -10,26 +10,32 @@ photos:
   - src: ../../assets/projects/irrigation-repair/01.jpg
     label: After
     alt: "Repaired PVC irrigation line in San Jose"
+    tags: [irrigation]
     area: san-jose
   - src: ../../assets/projects/irrigation-repair/02.jpg
     label: After
     alt: "Rebuilt anti-siphon valve manifold in Almaden Valley"
+    tags: [irrigation]
     area: almaden-valley
   - src: ../../assets/projects/irrigation-repair/03.jpg
     label: After
     alt: "Repaired underground sprinkler line in Ladera"
+    tags: [irrigation]
     area: ladera
   - src: ../../assets/projects/irrigation-repair/04.jpg
     label: After
     alt: "Replaced irrigation fittings and line in Almaden Valley"
+    tags: [irrigation]
     area: almaden-valley
   - src: ../../assets/projects/irrigation-repair/05-thick-roots.jpg
     label: Detail
     alt: "Irrigation line repair around thick tree roots in Almaden Valley"
+    tags: [irrigation]
     area: almaden-valley
   - src: ../../assets/projects/irrigation-repair/06-tight-spaces.jpg
     label: Detail
     alt: "Sprinkler pipe repair in a tight space in Ladera"
+    tags: [irrigation]
     area: ladera
 ---
 

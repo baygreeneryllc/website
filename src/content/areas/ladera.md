@@ -6,6 +6,6 @@ description: Retaining walls, fine grading, landscape lighting, irrigation, and 
 order: 3
 ---
 
-Ladera is a small community between Portola Valley and Menlo Park, and addresses here are often listed under either name. Properties tend to be wooded and sloped, so many of our projects in Ladera involve shaping the land itself: retaining walls and steps that create level, usable space, fine grading to manage water on hillsides, and lighting that makes paths and steps safe after dark.
+Ladera is an unincorporated neighborhood in San Mateo County, tucked between Portola Valley and Menlo Park, so addresses here often go by either name. Lots are wooded and sloped, which means a lot of our work here is about the ground itself.
 
-Below are projects we've completed in Ladera.
+That has meant retaining walls and steps that turn hillside into usable space, fine grading so water drains where it should, and path lighting so the steps are safe at night.

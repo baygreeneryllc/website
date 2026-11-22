@@ -1,7 +1,7 @@
 ---
 import { site } from '../data/site';
 interface Props { heading?: string; text?: string; service?: string }
-const { heading = 'Ready to get started?', text = `Tell us about your project. We serve the South Bay and Peninsula. Call ${site.phone} or request a quote online.`, service } = Astro.props;
+const { heading = 'Ready to get started?', text = `Tell us about your project. Submit your request online or call ${site.phone}.`, service } = Astro.props;
 const href = service ? `${site.bookingFormUrl}?service=${service}` : site.bookingFormUrl;
 ---
 <aside class="cta-panel">

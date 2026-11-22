@@ -10,26 +10,32 @@ photos:
   - src: ../../assets/projects/irrigation/01.jpg
     label: After
     alt: "New irrigation valve box and wiring installed in San Jose"
+    tags: [irrigation]
     area: san-jose
   - src: ../../assets/projects/irrigation/02.jpg
     label: After
     alt: "New drip irrigation line along a planting bed in Almaden Valley"
+    tags: [planting, irrigation]
     area: almaden-valley
   - src: ../../assets/projects/irrigation/03.jpg
     label: After
     alt: "New sprinkler manifold plumbing installed in Ladera"
+    tags: [irrigation]
     area: ladera
   - src: ../../assets/projects/irrigation/04.jpg
     label: After
     alt: "Multi-zone irrigation pipework laid out before backfill in Ladera"
+    tags: [irrigation]
     area: ladera
   - src: ../../assets/projects/irrigation/05.jpg
     label: After
     alt: "New irrigation valve and backflow assembly in San Jose"
+    tags: [irrigation]
     area: san-jose
   - src: ../../assets/projects/irrigation/06.jpg
     label: After
     alt: "Three-valve irrigation manifold installed in Ladera"
+    tags: [irrigation]
     area: ladera
 ---
 
