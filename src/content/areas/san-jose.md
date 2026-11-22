@@ -6,6 +6,6 @@ description: Licensed landscape contractor in San Jose. Landscape remodels, irri
 order: 1
 ---
 
-We work throughout San Jose, from older neighborhoods with mature trees and sprinkler systems that have been patched for decades to newer homes starting from bare dirt. A lot of the valley floor is heavy clay, so we spend real time on grading, drainage, and soil prep before anything goes in the ground.
+San Jose is the largest city in the Bay Area, and it covers a lot of ground, from older neighborhoods with big trees to newer homes on bare lots. Much of it sits on heavy clay, so we put real time into grading, drainage, and soil prep before anything gets planted.
 
-Most of our San Jose jobs are lawn replacements, irrigation repairs, decomposed granite paths, and full yard remodels.
+Most of our work here is lawn replacement, irrigation repair, decomposed granite paths, and full yard remodels.
