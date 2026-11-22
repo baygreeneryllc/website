@@ -377,28 +377,6 @@
      One section visible at a time, hash-routed so direct links work.
      ----------------------------------------------------------------- */
   function initPortfolioRouter() {
-    // Each project now has its own page. Old gallery links like
-    // /portfolio/#retaining-wall land on /projects/ and are forwarded.
-    const legacy = {
-      'golf-creek': 'almaden-valley-landscape-remodel',
-      'retaining-wall': 'ladera-retaining-wall',
-      'artificial-turf': 'almaden-valley-artificial-turf',
-      'fine-grading': 'ladera-fine-grading',
-      'dg-driveway': 'almaden-valley-dg-driveway',
-      'overseeding': 'san-jose-lawn-overseeding',
-      'fence': 'campbell-fence-replacement',
-      'yard-cleanup': 'campbell-yard-cleanup',
-      'sod-replacement': 'sod-replacement',
-      'irrigation-repair': 'irrigation-repair-calls',
-      'irrigation': 'drip-sprinkler-installs',
-      'landscape-lighting': 'ladera-landscape-lighting'
-    };
-    const hash = (window.location.hash || '').replace('#', '');
-    if (window.location.pathname === '/projects/' && legacy[hash]) {
-      window.location.replace('/projects/' + legacy[hash] + '/');
-      return;
-    }
-
     const root = document.querySelector('.portfolio-layout');
     if (!root) return;
     const toggle = root.querySelector('[data-sidebar-toggle]');
