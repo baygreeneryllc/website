@@ -7,7 +7,7 @@ cardBullets:
   - Landscape Feature Repairs
   - Problem-Solving & Corrective Solutions
   - Lighting, Drainage & Hardscape Fixes
-tile: ../../assets/projects/fence/02-after.jpg
+tile: ../../assets/photos/tile-landscape-repair.jpg
 tileAlt: Wood fence rebuilt by Bay Greenery
 order: 4
 ---
